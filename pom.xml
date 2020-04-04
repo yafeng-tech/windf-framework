@@ -32,4 +32,27 @@
         <module>./test-controller-api</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>yafeng.tech</id>
+            <url>http://139.199.126.105:8081/repository/yafeng.tech/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>yafeng.tech</id>
+            <url>http://139.199.126.105:8081/repository/yafeng.tech/</url>
+        </repository>
+        <snapshotRepository>
+            <id>yafeng.tech</id>
+            <url>http://139.199.126.105:8081/repository/yafeng.tech-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
