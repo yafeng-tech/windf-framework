@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.windf</groupId>
+    <version>1.0.0</version>
+    <artifactId>windf-framework</artifactId>
+    <packaging>pom</packaging>
+    <description>windf框架</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <modules>
+        <module>./core</module>
+
+        <module>./plugin-service-business</module>
+        <module>./plugin-controller-api</module>
+        <module>./plugin-repository-file</module>
+        <module>./plugin-repository-mysql</module>
+
+        <module>./test-controller-api</module>
+    </modules>
+
+</project>
