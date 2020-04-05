@@ -11,7 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.windf</groupId>
+    <groupId>cn.windf</groupId>
     <version>1.0.0</version>
     <artifactId>windf-framework</artifactId>
     <packaging>pom</packaging>
