@@ -10,10 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.windf</groupId>
     <artifactId>plugin-service-business</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>${windf.freemark.version}</version>
     <description>service 普通的增删改差service可以用它</description>
 
     <properties>

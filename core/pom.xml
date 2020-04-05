@@ -10,10 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.windf</groupId>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>${windf.freemark.version}</version>
     <description>核心包，所有模块和插件都必须引用</description>
 
     <properties>

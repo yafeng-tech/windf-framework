@@ -10,9 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.windf</groupId>
     <artifactId>plugin-repository-mysql</artifactId>
-    <version>1.0.0</version>
+    <version>${windf.freemark.version}</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -22,7 +21,7 @@
         <dependency>
             <groupId>cn.windf</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${windf.freemark.version}</version>
         </dependency>
 
         <dependency>

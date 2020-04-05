@@ -10,10 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.windf</groupId>
     <artifactId>plugin-repository-file</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>${windf.freemark.version}</version>
     <description>基本的文件的增删改查基本实现，以及提供一些通用的方法</description>
 
     <properties>
@@ -24,7 +23,7 @@
         <dependency>
             <groupId>cn.windf</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${windf.freemark.version}</version>
         </dependency>
     </dependencies>
 </project>

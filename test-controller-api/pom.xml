@@ -10,10 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.windf</groupId>
     <artifactId>test-controller-api</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>${windf.freemark.version}</version>
     <description>基本的api操作controller的接口</description>
 
     <dependencies>

@@ -10,10 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.windf</groupId>
     <artifactId>plugin-controller-api</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>${windf.freemark.version}</version>
     <description>基本的api操作controller，使用spring mvc，提供rest接口</description>
 
     <properties>
@@ -24,7 +23,7 @@
         <dependency>
             <groupId>cn.windf</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${windf.freemark.version}</version>
         </dependency>
 
         <!-- spring web 的引用 -->
