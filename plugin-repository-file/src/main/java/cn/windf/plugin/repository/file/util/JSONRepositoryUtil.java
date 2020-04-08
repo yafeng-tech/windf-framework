@@ -1,5 +1,6 @@
 package cn.windf.plugin.repository.file.util;
 
+import cn.windf.core.Constant;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import cn.windf.core.exception.CodeException;
@@ -7,10 +8,7 @@ import cn.windf.core.util.CollectionUtil;
 import cn.windf.core.util.FileUtil;
 import cn.windf.core.util.JSONUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -83,16 +81,19 @@ public class JSONRepositoryUtil {
 
         createFile(file);
 
-        FileWriter fileWritter = null;
+        Writer writer = null;
         try {
-            fileWritter = new FileWriter(file, append);
-            fileWritter.write(content);
+            writer = new BufferedWriter(
+                                     new OutputStreamWriter(
+                                             new FileOutputStream(file), Constant.DEFAULT_ENCODING));
+            writer.write(content);
+            writer.flush();
         } catch (IOException e) {
             throw new CodeException(e);
         } finally {
-            if (fileWritter != null) {
+            if (writer != null) {
                 try {
-                    fileWritter.close();
+                    writer.close();
                 } catch (IOException e) {
                     throw new CodeException(e);
                 }
