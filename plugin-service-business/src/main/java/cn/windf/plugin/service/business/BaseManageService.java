@@ -6,6 +6,7 @@ import cn.windf.core.entity.Page;
 import cn.windf.core.entity.SearchData;
 import cn.windf.core.repository.ManageRepository;
 import cn.windf.core.service.ManageService;
+import cn.windf.core.util.StringUtil;
 
 import java.io.File;
 import java.util.List;
@@ -19,12 +20,16 @@ public abstract class BaseManageService<T extends BaseEntity> implements ManageS
 
     @Override
     public void create(T entity) {
-        this.getManageRepository().create(entity);
+        this.update(entity);
     }
 
     @Override
     public void update(T entity) {
-        this.getManageRepository().update(entity);
+        if (StringUtil.isNotEmpty(entity.getId())) {
+            this.getManageRepository().update(entity);
+        } else {
+            this.getManageRepository().create(entity);
+        }
     }
 
     @Override
