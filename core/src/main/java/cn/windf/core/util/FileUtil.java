@@ -342,4 +342,25 @@ public class FileUtil {
 		return result;
 	}
 
+	/**
+	 * 递归删除文件
+	 * @param dirPath
+	 */
+	public static void deleteDir(String dirPath) {
+		File file = new File(dirPath);
+		if (file.isFile()) {
+			file.delete();
+		} else {
+			File[] files = file.listFiles();
+			if (files == null) {
+				file.delete();
+			} else {
+				for (int i = 0; i < files.length; i++) {
+					deleteDir(files[i].getAbsolutePath());
+				}
+				file.delete();
+			}
+		}
+	}
+
 }
