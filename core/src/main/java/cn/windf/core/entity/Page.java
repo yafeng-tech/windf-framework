@@ -8,6 +8,9 @@ import java.util.List;
  * 自动计算一些分页信息
  */
 public class Page<T> extends PageParameter implements Serializable {
+	/**
+	 * 默认的分页
+	 */
 	public static final Integer DEFAULT_PAGE_SIZE = 10;
 
 	private static final long serialVersionUID = 1L;
@@ -18,7 +21,8 @@ public class Page<T> extends PageParameter implements Serializable {
 	private Integer pageSize;
 
 	public Page() {
-
+		this.pageIndex = 1L;
+		this.pageSize = DEFAULT_PAGE_SIZE;
 	}
 
 	public Page(Long pageIndex, Integer pageSize) {
@@ -33,6 +37,10 @@ public class Page<T> extends PageParameter implements Serializable {
 		}
 	}
 
+	/**
+	 * 获取起始索引
+	 * @return 索引值
+	 */
 	public Long getStartIndex() {
 		if (pageIndex == null || pageSize == null) {
 			return null;
@@ -46,6 +54,10 @@ public class Page<T> extends PageParameter implements Serializable {
 		return startIndex;
 	}
 
+	/**
+	 * 获取结束索引
+	 * @return 索引值
+	 */
 	public Long getEndIndex() {
 		if (pageIndex == null || pageSize == null) {
 			return null;
@@ -58,13 +70,16 @@ public class Page<T> extends PageParameter implements Serializable {
 		return endIndex;
 	}
 
+	/**
+	 * 获取总页数
+	 * @return
+	 */
 	public Long getTotalPage() {
 		if (pageIndex == null || pageSize == null || total == null) {
 			return null;
 		}
 
-		Long totalPage = (total % pageSize > 0) ? (total / pageSize + 1) : (total / pageSize);
-		return totalPage;
+		return (total % pageSize > 0) ? (total / pageSize + 1) : (total / pageSize);
 	}
 
 	public List<T> getData() {
