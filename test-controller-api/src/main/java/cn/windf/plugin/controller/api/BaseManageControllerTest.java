@@ -37,17 +37,17 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     @Test
     public void t101Create() {
         // 获取预备数据
-        List<T> dataList = this.getCreateData();
+        List<Map<String, Object>> dataList = this.getCreateData();
 
         // 依次添加
-        for (T data : dataList) {
+        for (Map<String, Object> data : dataList) {
             ResponseEntity<ResultData> responseEntity = restTemplate.postForEntity(this.getBasePath() + "/", data, ResultData.class);
             ResultData resultData = responseEntity.getBody();
             Assert.assertEquals(ResultData.CODE_SUCCESS, resultData.getCode());
 
-            T testData = this.getDataById(data.getId());
+            T testData = this.getDataById((String) data.get("id"));
             Assert.assertNotNull(testData); // TODO 设置断言的消息
-            Assert.assertEquals(testData.getId(), data.getId());
+            Assert.assertEquals(testData.getId(), data.get("id"));
         }
     }
 
@@ -59,14 +59,14 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     @Test
     public void t301Update() {
-        T mainData = this.getCreateData().get(0);
+        Map<String, Object> mainData = this.getCreateData().get(0);
 
         // 修改之前
         T beforeUpdateData = this.getDataById(this.getDataId());
         Assert.assertNotEquals(this.getUpdateStatus(), beforeUpdateData.getStatus());
 
         // 修改，修改名称
-        mainData.setStatus(this.getUpdateStatus());
+        mainData.put("status", this.getUpdateStatus());
         ResponseEntity<ResultData> responseEntity = restTemplate.postForEntity(this.getBasePath() + "/", mainData, ResultData.class);
         ResultData resultData = responseEntity.getBody();
         Assert.assertEquals(ResultData.CODE_SUCCESS, resultData.getCode());
@@ -103,15 +103,15 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     public void t601DeleteByIds() {
 
         // 获取所有数据
-        List<T> dataList = this.getCreateData();
+        List<Map<String, Object>> dataList = this.getCreateData();
 
         // 获取子一个数据
-        T mainData = dataList.get(0);
+        Map<String, Object> mainData = dataList.get(0);
 
         String ids = "";
-        for (T data : dataList) {
+        for (Map<String, Object> data : dataList) {
             if (!data.equals(mainData)) {
-                ids += "," + data.getId();
+                ids += "," + data.get("id");
             }
         }
         if (ids.startsWith(",")) {
@@ -123,9 +123,9 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
         restTemplate.delete(this.getBasePath() + "/?ids={ids}", params);
 
-        for (T data : dataList) {
+        for (Map<String, Object> data : dataList) {
             if (!data.equals(mainData)) {
-                ResultData resultData = this.getResultById(data.getId());
+                ResultData resultData = this.getResultById((String) data.get("id"));
                 Assert.assertEquals(ResultData.CODE_NOT_FOUND, resultData.getCode());
             }
         }
@@ -190,7 +190,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      * 获取初始化的对象
      * @return
      */
-    protected abstract List<T> getCreateData();
+    protected abstract List<Map<String, Object>> getCreateData();
 
     /**
      * 获取数据的id
