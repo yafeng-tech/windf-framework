@@ -43,6 +43,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         for (Map<String, Object> data : dataList) {
             ResponseEntity<ResultData> responseEntity = restTemplate.postForEntity(this.getBasePath() + "/", data, ResultData.class);
             ResultData resultData = responseEntity.getBody();
+            Assert.assertNotNull(resultData);
             Assert.assertEquals(ResultData.CODE_SUCCESS, resultData.getCode());
 
             T testData = this.getDataById((String) data.get("id"));
@@ -69,6 +70,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         mainData.put("status", this.getUpdateStatus());
         ResponseEntity<ResultData> responseEntity = restTemplate.postForEntity(this.getBasePath() + "/", mainData, ResultData.class);
         ResultData resultData = responseEntity.getBody();
+        Assert.assertNotNull(resultData);
         Assert.assertEquals(ResultData.CODE_SUCCESS, resultData.getCode());
 
         // 修改之后
@@ -81,7 +83,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         ResultData resultData = restTemplate.getForObject(this.getBasePath() + "/", ResultData.class);
         analyzeResultData(resultData, Page.class);
         Page page = (Page) resultData.getData();
-        List<T> data = page.getData();
+        List data = page.getData();
         Assert.assertNotNull(data);
     }
 
@@ -108,14 +110,14 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         // 获取子一个数据
         Map<String, Object> mainData = dataList.get(0);
 
-        String ids = "";
+        StringBuffer ids = new StringBuffer();
         for (Map<String, Object> data : dataList) {
             if (!data.equals(mainData)) {
-                ids += "," + data.get("id");
+                if (ids.length() > 0) {
+                    ids.append(",");
+                }
+                ids.append(data.get("id"));
             }
-        }
-        if (ids.startsWith(",")) {
-            ids = ids.substring(1);
         }
 
         Map<String, Object> params = new HashMap<>();
