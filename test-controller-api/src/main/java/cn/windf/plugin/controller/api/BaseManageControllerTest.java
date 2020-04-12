@@ -143,8 +143,9 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     /**
      * 解析结果数据
-     * @param resultData
-     * @param clazz
+     * 要将结果集里面的json数据，转换为真正的对象
+     * @param resultData 结果集对象，里面存放的数据
+     * @param clazz data数据的类型，一般是page
      * @return
      */
     protected ResultData analyzeResultData(ResultData resultData, Class clazz) {
@@ -159,8 +160,9 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     /**
      * 根据id获取结果
-     * @param id
-     * @return
+     * 调用http接口，根据地id获取数据
+     * @param id 数据id
+     * @return 结果对象
      */
     protected ResultData getResultById(String id) {
         ResultData resultData = restTemplate.getForObject(this.getBasePath() + "/{id}", ResultData.class, id);
@@ -170,8 +172,9 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     /**
      * 根据id获取数据
-     * @param id
-     * @return
+     * 解析结果数据，获取ResultData中的data字段
+     * @param id 数据id
+     * @return 结果对象中的数据
      */
     protected T getDataById(String id) {
         ResultData resultData = this.getResultById(id);
@@ -184,31 +187,31 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     /**
      * 获取基本的路径
-     * @return
+     * @return 实体的路径
      */
     protected abstract String getBasePath();
 
     /**
      * 获取初始化的对象
-     * @return
+     * @return 获取数据，用于创建对象
      */
     protected abstract List<Map<String, Object>> getCreateData();
 
     /**
      * 获取数据的id
-     * @return
+     * @return 获取数据的id
      */
     protected abstract String getDataId();
 
     /**
      * 获取修改状态
-     * @return
+     * @return 修改成的数据
      */
     protected abstract String getUpdateStatus();
 
     /**
      * 获取数据类型
-     * @return
+     * @return 实体的类型
      */
     protected abstract Class<T> getDataType();
 
