@@ -27,13 +27,20 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     @Autowired
     protected TestRestTemplate restTemplate;
 
+    /**
+     * 准备数据
+     */
     @Test
     public void t000Ready() {
-        // 准备其他数据
         this.ready();
     }
 
-
+    /**
+     * 测试创建数据接口
+     * 获取要创建的数据
+     * 遍历进行创建
+     * 每次创建完，获取数据进行验证，是否存在
+     */
     @Test
     public void t101Create() {
         // 获取预备数据
@@ -52,12 +59,23 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         }
     }
 
+    /**
+     * 验证单个数据查询
+     * 获取数据，id不为空
+     * 很多接口都依赖于这个接口验证，如果这个失败了，基本上每个接口都会失败
+     */
     @Test
     public void t201Detail() {
         T data = this.getDataById(this.getDataId());
         Assert.assertEquals(this.getDataId(), data.getId());
     }
 
+    /**
+     * 调用修改接口
+     * 先验证修改之前的状态
+     * 修改状态为一个不同的值，
+     * 然后进行判断时候修改成功
+     */
     @Test
     public void t301Update() {
         Map<String, Object> mainData = this.getCreateData().get(0);
@@ -78,6 +96,11 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         Assert.assertEquals(this.getUpdateStatus(), afterUpdateData.getStatus());
     }
 
+    /**
+     * 搜索接口验证
+     * 调用搜索接口
+     * 搜索到的数据不为空
+     */
     @Test
     public void t401Search() {
         ResultData resultData = restTemplate.getForObject(this.getBasePath() + "/", ResultData.class);
@@ -87,6 +110,12 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         Assert.assertNotNull(data);
     }
 
+    /**
+     * 验证url参数删除
+     * 先验证对象存在，
+     * 调用删除接口
+     * 最后验证数据是否被删除
+     */
     @Test
     public void t501Delete() {
         // 删除之前
@@ -101,9 +130,13 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         Assert.assertEquals(ResultData.CODE_NOT_FOUND, afterDeleteResultData.getCode());
     }
 
+    /**
+     * 验证 根据id参数，多个删除
+     * 调用删除接口
+     * 验证数据是否被删除
+     */
     @Test
     public void t601DeleteByIds() {
-
         // 获取所有数据
         List<Map<String, Object>> dataList = this.getCreateData();
 
@@ -134,7 +167,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     }
 
     /**
-     * 销毁数据
+     * 测试后，销毁数据
      */
     @Test
     public void t999Destroy() {
@@ -146,16 +179,14 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      * 要将结果集里面的json数据，转换为真正的对象
      * @param resultData 结果集对象，里面存放的数据
      * @param clazz data数据的类型，一般是page
-     * @return
      */
-    protected ResultData analyzeResultData(ResultData resultData, Class clazz) {
+    protected void analyzeResultData(ResultData resultData, Class clazz) {
         JSONObject jsonData = (JSONObject) resultData.getData();
         if (jsonData != null) {
+            @SuppressWarnings("unchecked")
             Object data = jsonData.toJavaObject(clazz);
             resultData.setData(data);
         }
-
-        return resultData;
     }
 
     /**
@@ -166,7 +197,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      */
     protected ResultData getResultById(String id) {
         ResultData resultData = restTemplate.getForObject(this.getBasePath() + "/{id}", ResultData.class, id);
-        resultData = analyzeResultData(resultData, this.getDataType());
+        analyzeResultData(resultData, this.getDataType());
         return resultData;
     }
 
@@ -176,6 +207,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      * @param id 数据id
      * @return 结果对象中的数据
      */
+    @SuppressWarnings("unchecked")
     protected T getDataById(String id) {
         ResultData resultData = this.getResultById(id);
         if (ResultData.CODE_SUCCESS.equals(resultData.getCode())) {
@@ -217,11 +249,13 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     /**
      * 准备数据
+     * 比如验证实体，先要创建模块
      */
     protected abstract void ready();
 
     /**
      * 销毁数据
+     * 准备的数据要被删除，不然会有很多脏数据
      */
     protected abstract void destroy();
 }
