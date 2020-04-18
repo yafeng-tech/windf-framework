@@ -67,6 +67,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     @Test
     public void t201Detail() {
         T data = this.getDataById(this.getDataId());
+        Assert.assertNotNull(data);
         Assert.assertEquals(this.getDataId(), data.getId());
     }
 
@@ -82,6 +83,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
         // 修改之前
         T beforeUpdateData = this.getDataById(this.getDataId());
+        Assert.assertNotNull(beforeUpdateData);
         Assert.assertNotEquals(this.getUpdateStatus(), beforeUpdateData.getStatus());
 
         // 修改，修改名称
@@ -93,6 +95,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
         // 修改之后
         T afterUpdateData = this.getDataById(this.getDataId());
+        Assert.assertNotNull(afterUpdateData);
         Assert.assertEquals(this.getUpdateStatus(), afterUpdateData.getStatus());
     }
 
