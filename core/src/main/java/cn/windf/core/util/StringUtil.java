@@ -85,14 +85,28 @@ public class StringUtil extends StringUtils {
     /**
      * 首字母大写
      *
-     * @param str
-     * @return
+     * @param str       要处理的字符串
+     * @return          首字母大写后的字符串
      */
     public static String firstLetterUppercase(String str) {
         if (str == null || str.length() <= 1) {
             return str;
         } else {
             return str.substring(0, 1).toUpperCase() + str.substring(1);
+        }
+    }
+
+    /**
+     * 首字母小写
+     *
+     * @param str   要处理的字符串
+     * @return      首字母小写后的字符串
+     */
+    public static String firstLetterLowerCase(String str) {
+        if (str == null || str.length() <= 1) {
+            return str;
+        } else {
+            return str.substring(0, 1).toLowerCase() + str.substring(1);
         }
     }
 
