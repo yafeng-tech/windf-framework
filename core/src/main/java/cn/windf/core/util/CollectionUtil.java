@@ -1,8 +1,9 @@
 package cn.windf.core.util;
 
-import java.util.*;
-
+import cn.windf.core.entity.Entitiable;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
 
 public class CollectionUtil {
 	public static boolean isNotEmpty(Collection<? extends Object> collection) {
@@ -94,5 +95,25 @@ public class CollectionUtil {
 		}
 
 		return result.toString();
+	}
+
+	/**
+	 * 将集合类型，根据id作为key，转换为map
+	 * @param list	实体列表
+	 * @param <T>	实体数据类型
+	 * @return		转换之后的map
+	 */
+	public static <T extends Entitiable> Map<String, T> list2Map(Collection<T> list) {
+		if (list == null) {
+			return null;
+		}
+
+		Map<String, T> map = new HashMap<>();
+
+		for (T t : list) {
+			map.put(t.getId(), t);
+		}
+
+		return map;
 	}
 }
