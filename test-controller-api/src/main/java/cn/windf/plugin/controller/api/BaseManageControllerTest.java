@@ -1,31 +1,31 @@
 package cn.windf.plugin.controller.api;
 
-import com.alibaba.fastjson.JSONObject;
 import cn.windf.core.entity.BaseEntity;
 import cn.windf.core.entity.Page;
 import cn.windf.core.entity.ResultData;
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import cn.windf.core.util.StringUtil;
+import com.alibaba.fastjson.JSONObject;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
     @Autowired
     protected TestRestTemplate restTemplate;
+
+    protected String getName() {
+        return "";
+    }
 
     /**
      * 准备数据
@@ -33,6 +33,13 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     @Test
     public void t000Ready() {
         this.ready();
+    }
+
+    @Test
+    public void readyData() {
+        // 获取预备数据
+        List<Map<String, Object>> dataList = this.getCreateData();
+
     }
 
     /**
@@ -48,55 +55,38 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
 
         // 依次添加
         for (Map<String, Object> data : dataList) {
+            // 测试添加
             ResponseEntity<ResultData> responseEntity = restTemplate.postForEntity(this.getBasePath() + "/", data, ResultData.class);
             ResultData resultData = responseEntity.getBody();
-            Assert.assertNotNull(resultData);
-            Assert.assertEquals(ResultData.CODE_SUCCESS, resultData.getCode());
-
+            assertThat(resultData).as("添加数据返回不为空").isNotNull();
+            assertThat(resultData.getCode()).as("添加数据,应该返回正常状态").isEqualTo(ResultData.CODE_SUCCESS);
             T testData = this.getDataById((String) data.get("id"));
-            Assert.assertNotNull(testData); // TODO 设置断言的消息
-            Assert.assertEquals(testData.getId(), data.get("id"));
+            assertThat(testData).as("添加后，再次查询数据，应该能够获取数据").isNotNull();
+            assertThat(testData.getId()).as("添加后，再次查询数据，查询的id和指定的id是一样的").isEqualTo(data.get("id"));
+
+            // 修改，比较status前后的值
+            String newStatus = StringUtil.fixNull((String) data.get("status")) + "_new";
+            data.put("status", newStatus);
+            ResponseEntity<ResultData> updateResponseEntity = restTemplate.postForEntity(this.getBasePath() + "/", data, ResultData.class);
+            ResultData updateResultData = updateResponseEntity.getBody();
+            assertThat(updateResultData).as("修改数据后，返回不为空").isNotNull();
+            assertThat(updateResultData.getCode()).as("修改数据后,应该返回正常状态").isEqualTo(ResultData.CODE_SUCCESS);
+            T afterUpdateData = this.getDataById((String) data.get("id"));
+            assertThat(afterUpdateData).as("修改后，再次查询数据，应该能够获取数据").isNotNull();
+            assertThat(afterUpdateData.getId()).as("修改后，再次查询数据，查询的id和指定的id应该是一样的").isEqualTo(data.get("id"));
+            assertThat(afterUpdateData.getStatus()).as("修改后，再次查询数据，查询的状态，应该是新值").isEqualTo(newStatus);
+
+
         }
-    }
 
-    /**
-     * 验证单个数据查询
-     * 获取数据，id不为空
-     * 很多接口都依赖于这个接口验证，如果这个失败了，基本上每个接口都会失败
-     */
-    @Test
-    public void t201Detail() {
-        T data = this.getDataById(this.getDataId());
-        Assert.assertNotNull(data);
-        Assert.assertEquals(this.getDataId(), data.getId());
-    }
+        // 单个删除，删除之后，找不到对应的数据
+        restTemplate.delete(this.getBasePath() + "/{id}", this.getDataId());
+        ResultData afterDeleteResultData = this.getResultById(this.getDataId());
+        assertThat(afterDeleteResultData.getData()).as("删除之后，再次查询数据，应该获取不到数据").isNull();
+        assertThat(afterDeleteResultData.getCode()).as("删除之后，再次查询数据，状态应该是404").isEqualTo(ResultData.CODE_NOT_FOUND);
 
-    /**
-     * 调用修改接口
-     * 先验证修改之前的状态
-     * 修改状态为一个不同的值，
-     * 然后进行判断时候修改成功
-     */
-    @Test
-    public void t301Update() {
-        Map<String, Object> mainData = this.getCreateData().get(0);
-
-        // 修改之前
-        T beforeUpdateData = this.getDataById(this.getDataId());
-        Assert.assertNotNull(beforeUpdateData);
-        Assert.assertNotEquals(this.getUpdateStatus(), beforeUpdateData.getStatus());
-
-        // 修改，修改名称
-        mainData.put("status", this.getUpdateStatus());
-        ResponseEntity<ResultData> responseEntity = restTemplate.postForEntity(this.getBasePath() + "/", mainData, ResultData.class);
-        ResultData resultData = responseEntity.getBody();
-        Assert.assertNotNull(resultData);
-        Assert.assertEquals(ResultData.CODE_SUCCESS, resultData.getCode());
-
-        // 修改之后
-        T afterUpdateData = this.getDataById(this.getDataId());
-        Assert.assertNotNull(afterUpdateData);
-        Assert.assertEquals(this.getUpdateStatus(), afterUpdateData.getStatus());
+        // 多个删除接口
+        dDeleteByIds();
     }
 
     /**
@@ -110,27 +100,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         analyzeResultData(resultData, Page.class);
         Page page = (Page) resultData.getData();
         List data = page.getData();
-        Assert.assertNotNull(data);
-    }
-
-    /**
-     * 验证url参数删除
-     * 先验证对象存在，
-     * 调用删除接口
-     * 最后验证数据是否被删除
-     */
-    @Test
-    public void t501Delete() {
-        // 删除之前
-        T beforeUpdateResultData = this.getDataById(this.getDataId());
-        Assert.assertNotNull(beforeUpdateResultData);
-
-        // 删除
-        restTemplate.delete(this.getBasePath() + "/{id}", this.getDataId());
-
-        // 删除之后
-        ResultData afterDeleteResultData = this.getResultById(this.getDataId());
-        Assert.assertEquals(ResultData.CODE_NOT_FOUND, afterDeleteResultData.getCode());
+        assertThat(data).as("搜索应该有返回结果").isNotNull();
     }
 
     /**
@@ -138,8 +108,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      * 调用删除接口
      * 验证数据是否被删除
      */
-    @Test
-    public void t601DeleteByIds() {
+    public void dDeleteByIds() {
         // 获取所有数据
         List<Map<String, Object>> dataList = this.getCreateData();
 
@@ -164,7 +133,8 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         for (Map<String, Object> data : dataList) {
             if (!data.equals(mainData)) {
                 ResultData resultData = this.getResultById((String) data.get("id"));
-                Assert.assertEquals(ResultData.CODE_NOT_FOUND, resultData.getCode());
+                assertThat(resultData.getData()).as("删除之后，再次查询数据，应该获取不到数据").isNull();
+                assertThat(resultData.getCode()).as("删除之后，再次查询数据，状态应该是404").isEqualTo(ResultData.CODE_NOT_FOUND);
             }
         }
     }
