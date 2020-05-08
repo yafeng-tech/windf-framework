@@ -23,23 +23,12 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     @Autowired
     protected TestRestTemplate restTemplate;
 
-    protected String getName() {
-        return "";
-    }
-
     /**
      * 准备数据
      */
     @Test
     public void t000Ready() {
         this.ready();
-    }
-
-    @Test
-    public void readyData() {
-        // 获取预备数据
-        List<Map<String, Object>> dataList = this.getCreateData();
-
     }
 
     /**
@@ -86,7 +75,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
         assertThat(afterDeleteResultData.getCode()).as("删除之后，再次查询数据，状态应该是404").isEqualTo(ResultData.CODE_NOT_FOUND);
 
         // 多个删除接口
-        dDeleteByIds();
+        deleteByIds();
     }
 
     /**
@@ -108,7 +97,7 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      * 调用删除接口
      * 验证数据是否被删除
      */
-    public void dDeleteByIds() {
+    public void deleteByIds() {
         // 获取所有数据
         List<Map<String, Object>> dataList = this.getCreateData();
 
@@ -137,14 +126,6 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
                 assertThat(resultData.getCode()).as("删除之后，再次查询数据，状态应该是404").isEqualTo(ResultData.CODE_NOT_FOUND);
             }
         }
-    }
-
-    /**
-     * 测试后，销毁数据
-     */
-    @Test
-    public void t999Destroy() {
-        this.destroy();
     }
 
     /**
@@ -209,12 +190,6 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
     protected abstract String getDataId();
 
     /**
-     * 获取修改状态
-     * @return 修改成的数据
-     */
-    protected abstract String getUpdateStatus();
-
-    /**
      * 获取数据类型
      * @return 实体的类型
      */
@@ -225,10 +200,4 @@ public abstract class BaseManageControllerTest<T extends BaseEntity> {
      * 比如验证实体，先要创建模块
      */
     protected abstract void ready();
-
-    /**
-     * 销毁数据
-     * 准备的数据要被删除，不然会有很多脏数据
-     */
-    protected abstract void destroy();
 }
