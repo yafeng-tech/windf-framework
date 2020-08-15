@@ -27,6 +27,7 @@
         <module>./plugin-controller-api</module>
         <module>./plugin-repository-file</module>
         <module>./plugin-repository-mysql</module>
+        <module>./plugin-repository-mybatis</module>
 
         <module>./test-controller-api</module>
     </modules>
