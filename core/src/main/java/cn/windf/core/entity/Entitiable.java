@@ -1,6 +1,8 @@
 package cn.windf.core.entity;
 
-public interface Entitiable {
+import java.io.Serializable;
+
+public interface Entitiable extends Serializable {
     /**
      * 获取id
      * @return
