@@ -116,4 +116,25 @@ public class CollectionUtil {
 
 		return map;
 	}
+
+	/**
+	 * 把结合转换成字符串
+	 * @param objs			要转换的集合
+	 * @return				转换后的字符串
+	 */
+	public static String toString(Object... objs) {
+		StringBuilder sb = new StringBuilder();
+		if (objs != null) {
+			for (int i = 0; i < objs.length; i++) {
+				Object obj = objs[i];
+
+				sb.append(obj == null? "null": obj.toString());
+				if (i != objs.length - 1) {
+					sb.append(",");
+				}
+			}
+
+		}
+		return sb.toString();
+	}
 }
