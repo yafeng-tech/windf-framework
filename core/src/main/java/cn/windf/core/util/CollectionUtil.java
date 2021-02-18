@@ -58,6 +58,23 @@ public class CollectionUtil {
 	}
 
 	/**
+	 * list翻转
+	 * @param list
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> List<T> reverse(List<T> list) {
+		// 复制list
+		List<T> result = new ArrayList<>(list.size());
+		Collections.copy(result, list);
+
+		// 翻转list
+		Collections.reverse(result);
+
+		return result;
+	}
+
+	/**
 	 * 获取有序集合的第一个元素
 	 * @param list
 	 * @param <T>
