@@ -1,6 +1,7 @@
 package cn.windf.core.util;
 
 import cn.windf.core.entity.BaseEntity;
+import cn.windf.core.exception.CodeException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.BeanUtils;
@@ -9,6 +10,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -231,6 +234,36 @@ public class BeanUtil {
         } else {
             return methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
         }
+    }
+
+    /**
+     * 获取字段的值，如果有字段获取，如果没有字段，返回null
+     * @param obj           对应的对象
+     * @param fieldName     字段的名称
+     * @return              获取到的值
+     */
+    public static Object getFiledValue(Object obj, String fieldName) {
+        if (obj == null) {
+            throw new CodeException("obj 不能为空");
+        }
+
+        if (StringUtil.isEmpty(fieldName)) {
+            throw new CodeException("obj 不能为空");
+        }
+
+        try {
+            Field field = obj.getClass().getDeclaredField(fieldName);
+            String getterName = "get";
+            if (field.getType().isAssignableFrom(Boolean.class)) {
+                getterName = "is";
+            }
+            String methodName = getterName + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            java.lang.reflect.Method method = obj.getClass().getMethod(methodName);
+            return method.invoke(obj);
+        } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
+        }
+
+        return null;
     }
 
     /**
