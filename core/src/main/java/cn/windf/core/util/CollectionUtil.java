@@ -64,13 +64,24 @@ public class CollectionUtil {
 	 * @return
 	 */
 	public static <T> List<T> reverse(List<T> list) {
-		// 复制list
-		List<T> result = new ArrayList<>(list.size());
-		Collections.copy(result, list);
-
+		// 复制出来新的list
+		List<T> result = CollectionUtil.copy(list);
 		// 翻转list
 		Collections.reverse(result);
 
+		return result;
+	}
+
+	/**
+	 * 复制list
+	 * @param src
+	 * @param <T>
+	 */
+	public static <T> List<T> copy(List<T> src) {
+		List<T> result = new ArrayList<>(src.size());
+		for (int i = 0; i < src.size(); i++) {
+			result.add(src.get(i));
+		}
 		return result;
 	}
 
