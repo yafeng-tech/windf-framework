@@ -30,6 +30,8 @@
         <module>./plugin-repository-mybatis</module>
 
         <module>./test-controller-api</module>
+
+        <module>./framework-full</module>
     </modules>
 
     <repositories>
