@@ -252,15 +252,19 @@ public class BeanUtil {
         }
 
         try {
-            Field field = obj.getClass().getDeclaredField(fieldName);
             String getterName = "get";
-            if (field.getType().isAssignableFrom(Boolean.class)) {
-                getterName = "is";
+            try {
+                Field field = obj.getClass().getDeclaredField(fieldName);
+                if (field.getType().isAssignableFrom(Boolean.class)) {
+                    getterName = "is";
+                }
+            } catch (NoSuchFieldException e) {
+
             }
             String methodName = getterName + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            java.lang.reflect.Method method = obj.getClass().getMethod(methodName);
+            Method method = obj.getClass().getMethod(methodName);
             return method.invoke(obj);
-        } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
         }
 
         return null;
